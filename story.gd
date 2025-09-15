@@ -13,7 +13,7 @@ func check_emergence() -> void:
 	
 	if inciting_event != &"": return
 	var k := DetRng.key([&"story", &"inciting"])
-	inciting_event = StringName(DetRng.choice(k, [
+	inciting_event = StringName(DetRng.choice_from(k, [
 		&"eclipse_omen", &"famine", &"stranger_arrives", &"blood_tax"
 	]))
 	# Optionally enqueue a GameEvent immediately:
@@ -52,7 +52,7 @@ func _check_belief_clusters() -> bool:
 
 func _check_conversion_pressure() -> bool:
 	var idx := GameDefs.STAT.ANGER
-	var ready := []
+	var r := []
 	for i in cult_data.belief_states.size():
 		if cult_data.belief_states[i] < GameDefs.BeliefState.BELIEVER:
 			var believer_friends := 0
@@ -60,9 +60,9 @@ func _check_conversion_pressure() -> bool:
 				if cult_data.belief_states[j] >= GameDefs.BeliefState.BELIEVER and cult_data.relationship_matrix[i][j] > 60.0:
 					believer_friends += 1
 			if believer_friends >= 2:
-				ready.append(i)
+				r.append(i)
 	cult_data.narrative_candidates["conversion"] = ready
-	return ready.size() > 0
+	return r.size() > 0
 
 func _check_betrayal_risk() -> bool:
 	var anger_idx := GameDefs.STAT.ANGER

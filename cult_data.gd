@@ -55,11 +55,11 @@ func ensure_npcs(count: int) -> void:
 
 		# Deterministic name
 		var k_name := DetRng.key([&"npc", npc.id, &"name", &"lotr"])
-		npc.display_name = String(DetRng.choice(k_name, names))  # add display_name field if you don’t have one
+		npc.display_name = String(DetRng.choice_from(k_name, names))  # add display_name field if you don’t have one
 
 		# Deterministic role
 		var k_role := DetRng.key([&"npc", npc.id, &"role"])
-		npc.role = StringName(DetRng.choice(k_role, roles))      # add role field on NPCData
+		npc.role = StringName(DetRng.choice_from(k_role, roles))      # add role field on NPCData
 
 		# Deterministic initial stats (0..100)
 		for s in range(GameDefs.STAT_COUNT):

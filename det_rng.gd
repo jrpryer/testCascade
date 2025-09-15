@@ -81,9 +81,9 @@ func import_state(d: Dictionary) -> void:
 func key(parts: Array) -> StringName:
 	if parts.is_empty():
 		return StringName("")
-	var sb := String(String(parts[0]))
+	var sb := str(str(parts[0]))
 	for i in range(1, parts.size()):
-		sb += ":" + String(parts[i])
+		sb += ":" + str(parts[i])
 	return StringName(sb)
 
 func local_rng(parts: Array) -> RandomNumberGenerator:
