@@ -61,7 +61,7 @@ func _check_conversion_pressure() -> bool:
 					believer_friends += 1
 			if believer_friends >= 2:
 				r.append(i)
-	cult_data.narrative_candidates["conversion"] = ready
+	cult_data.narrative_candidates["conversion"] = r
 	return r.size() > 0
 
 func _check_betrayal_risk() -> bool:

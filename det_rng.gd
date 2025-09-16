@@ -42,14 +42,11 @@ func get_stream(name: StringName) -> RandomNumberGenerator:
 	return _streams[name]
 
 # Sugar (Godot 4.4 — no generic function params)
-func randf(name: StringName) -> float:
-	return get_stream(name).randf()
+func randf(name: StringName) -> float: return get_stream(name).randf()
 
-func randi(name: StringName) -> int:
-	return get_stream(name).randi()
+func randi(name: StringName) -> int: return get_stream(name).randi()
 
-func randi_range(name: StringName, a: int, b: int) -> int:
-	return get_stream(name).randi_range(a, b)
+func randi_range(name: StringName, a: int, b: int) -> int: return get_stream(name).randi_range(a, b)
 
 func choice_int(name: StringName, arr: Array[int]) -> int:
 	return arr[get_stream(name).randi_range(0, arr.size() - 1)] if not arr.is_empty() else 0

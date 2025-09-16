@@ -4,6 +4,7 @@ extends Node
 @onready var cm: CultManager = $CultManager
 @onready var cs: CascadeSystem = $CascadeSystem
 @onready var story: StorySystem = $StorySystem
+@onready var log: RichTextLabel = $CanvasLayer/Control/PanelContainer/RichTextLabel
 
 func _ready() -> void:
 	# 0) Deterministic bootstrap
@@ -111,18 +112,13 @@ func _make_cult_data(n: int) -> CultData:
 	
 	
 	# Stats matrix n x STAT_COUNT --> I might be doing something wrong here
-	cd.stats_matrix.resize(n)
-	for i in n:
-		cd.stats_matrix[i] = PackedFloat32Array()
-		cd.stats_matrix[i].resize(GameDefs.STAT_COUNT)
-		cd.stats_matrix[i].fill(0.0)
 	
 	# Seed a few starting stats in the matrix (example)
-	cd.stats_matrix[0][GameDefs.STAT.FORTUNE] = 50.0
-	cd.stats_matrix[1][GameDefs.STAT.FORTUNE] = 20.0
+	cd.npcs[0].stats[GameDefs.STAT.FORTUNE] = 50.0
+	cd.npcs[1].stats[GameDefs.STAT.FORTUNE] = 20.0
 
 	# Mirror into NPCData so they’re “live”
-	cd.sync_npcs_from_matrix()
+	#cd.sync_npcs_from_matrix()
 	
 	# Optional cached containers
 	cd.social_clusters = []
@@ -135,12 +131,17 @@ func _make_cult_data(n: int) -> CultData:
 	return cd
 
 
+func _append_log_line(s: String) -> void:
+	log.append_text(s + "\n")
+	log.scroll_to_line(log.get_line_count() - 1)  # keep view pinned to latest
+
+
 func _print_stats(cd: CultData, label: String) -> void:
-	var fortune_idx: int = int(GameDefs.STAT_INDICES["fortune"])
+	var idx := GameDefs.stat_index(&"fortune")
 	var line := "%s | fortune: " % label
-	for i in cd.stats_matrix.size():
-		line += "NPC%d=%.2f  " % [i, cd.stats_matrix[i][fortune_idx]]
-	print(line)
+	for i in range(cd.npcs.size()):
+		line += "%s=%.2f  " % [cd.npcs[i].display_name, cd.npcs[i].stats[idx]]
+	_append_log_line(line)
 
 func _on_state_changed(change_type: String, affected_npcs: Array) -> void:
 	print("[state_changed] type=%s affected=%s" % [change_type, affected_npcs])
@@ -149,8 +150,10 @@ func _on_story_ready(pattern_name: String) -> void:
 	print("[story_ready] %s" % pattern_name)
 
 func _print_memory_tails(cd: CultData, tail: int) -> void:
-	for i in range(cd.npcs.size()):
-		var npc := cd.npcs[i]
-		print("NPC%d memories:" % i)
-		for m in npc.get_memories_ordered(tail):
-			print("  ", m)
+	var n: int = cd.npcs.size()
+	for i in range(n):
+		_append_log_line("%s memories:" % cd.npcs[i].display_name)
+		var notes: Array = cd.npcs[i].get_memories_ordered(tail)
+		for j in range(notes.size()):
+			var m: MemoryNote = notes[j]
+			_append_log_line("  " + str(m))
