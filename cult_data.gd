@@ -3,11 +3,11 @@ class_name CultData
 
 @export var npcs: Array[NPCData] = []
 @export var relationship_matrix: Array[PackedFloat32Array] = []  # NPC_CAPACITY x NPC_CAPACITY
-@export var belief_states: PackedInt32Array = []                 # enum BeliefState
+@export var community_roles: PackedInt32Array = []                 # enum CommunityRole
 #@export var stats_matrix: Array[PackedFloat32Array] = []         # NPC_CAPACITY x STAT_COUNT
 
 # Cached queries
-var believers_by_family: Dictionary = {}  # family_id -> Array[npc_id]
+#var believers_by_family: Dictionary = {}  # family_id -> Array[npc_id]
 var social_clusters: Array[Array] = []
 var narrative_candidates: Dictionary = {}
 
@@ -19,7 +19,7 @@ func _init() -> void:
 		relationship_matrix[i].resize(n)
 		relationship_matrix[i].fill(0.0)
 
-	belief_states.resize(n)
+	community_roles.resize(n)
 
 	#stats_matrix.resize(n)
 	#for i in n:
@@ -43,8 +43,7 @@ func ensure_npcs(count: int) -> void:
 		&"Frodo",&"Samwise",&"Gandalf",&"Aragorn",&"Legolas",&"Gimli",
 		&"Boromir",&"Merry",&"Pippin",&"Éowyn",&"Faramir",&"Galadriel",
 	]
-	var roles: Array[StringName] = [&"apostle",&"believer",&"skeptic",&"outsider",&"authority"]
-
+	var roles: Array[StringName] = [&"apostle",&"priest",&"worker",&"builder"]
 	var start := npcs.size()
 	npcs.resize(count)
 	for i in range(start, count):

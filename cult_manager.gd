@@ -68,14 +68,22 @@ func spread_stat(ev: GameEvent) -> void:
 
 
 func spread_belief(ev: GameEvent) -> void:
-	# Sketch: increase neighbors toward BELIEVER if influence is strong
 	var start := ev.source_npc
 	if start < 0: return
+	var piety_idx: int = GameDefs.STAT.PIETY
 	for i in cult_data.relationship_matrix.size():
 		if i == start: continue
 		var w := cult_data.relationship_matrix[start][i]
 		if w > 70.0:
-			cult_data.belief_states[i] = max(cult_data.belief_states[i], GameDefs.BeliefState.SEEKER)
+			# Increase Piety by a small amount, scaled to relationship weight (e.g., 1% of w)
+			var delta: float = w * 0.01
+			var before: float = cult_data.npcs[i].stats[piety_idx]
+			var after: float = clamp(before + delta, 0.0, 100.0)
+			cult_data.npcs[i].stats[piety_idx] = after
+			_remember(i, ev, before, after, "piety_influence")
+	# Optionally emit an updated signal or update cached queries
+	emit_signal("state_changed", "spread_piety", [start])
+
 
 func _apply_stat_delta(npc_id: int, stat_name: String, delta: float) -> void:
 	if npc_id < 0: return
