@@ -55,7 +55,7 @@ func add_stat(npc_id: int, stat_idx: int, delta: float, ev: GameEvent) -> float:
 #signal state_changed(change_type: GameDefs.ACTION, affected_npcs: Array)
 #
 #@export var cult_data: CultData
-#@export var cascade_system: CascadeSystem
+#@export var cascade_system: CascadeManager
 #
 #const CLUSTER_AFFINITY_THRESHOLD: float = 70.0
 ## Tune how much relationships change per point of stat delta experienced by tgt.

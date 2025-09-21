@@ -1,8 +1,8 @@
 # res://systems/story.gd
 extends Node
-class_name StorySystem
+class_name StoryManager
 
-@export var cascade: CascadeSystem
+@export var cascade: CascadeManager
 @export var cult: CultManager
 
 var started: bool = false
@@ -73,7 +73,7 @@ func _pick_random_npc_id(stream_key: StringName) -> int:
 
 
 	#extends Node
-#class_name StorySystem
+#class_name StoryManager
 #
 #signal story_moment_detected(moment_type: String, participants: Array[int], context: Dictionary, options: Array)
 #signal pattern_recognized(pattern_name: String, severity: float, npcs_involved: Array[int])
@@ -92,7 +92,7 @@ func _pick_random_npc_id(stream_key: StringName) -> int:
 #var _moment_detectors: Dictionary = {}
 #
 #func _ready() -> void:
-#	assert(cult_data != null, "StorySystem requires cult_data")
+#	assert(cult_data != null, "StoryManager requires cult_data")
 #	
 #	if not EventLog.event_recorded.is_connected(_analyze_event_for_drama):
 #		EventLog.event_recorded.connect(_analyze_event_for_drama)

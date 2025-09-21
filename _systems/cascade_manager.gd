@@ -1,5 +1,5 @@
 extends Node
-class_name CascadeSystem
+class_name CascadeManager
 
 @export var cult_manager: CultManager
 #@export var event_log: EventLog_class        # optional; set if you want logging here
@@ -117,7 +117,7 @@ func _handle_stat_cascade(ev: GameEvent) -> void:
 
 
 #extends Node
-#class_name CascadeSystem
+#class_name CascadeManager
 #
 #@export var cult_manager: CultManager
 #var cascades_queue: Array[GameEvent] = []

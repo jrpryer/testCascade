@@ -12,14 +12,14 @@ script = ExtResource("1_ebhye")
 script = ExtResource("2_4h71j")
 metadata/_custom_type_script = "uid://c0na84w8h56y4"
 
-[node name="CascadeSystem" type="Node" parent="." node_paths=PackedStringArray("cult_manager")]
+[node name="CascadeManager" type="Node" parent="." node_paths=PackedStringArray("cult_manager")]
 script = ExtResource("3_oyij0")
 cult_manager = NodePath("../CultManager")
 metadata/_custom_type_script = "uid://ni8dvv82evha"
 
-[node name="StorySystem" type="Node" parent="." node_paths=PackedStringArray("cascade", "cult")]
+[node name="StoryManager" type="Node" parent="." node_paths=PackedStringArray("cascade", "cult")]
 script = ExtResource("4_4q0dr")
-cascade = NodePath("../CascadeSystem")
+cascade = NodePath("../CascadeManager")
 cult = NodePath("../CultManager")
 metadata/_custom_type_script = "uid://clbwb0krl25ep"
 
@@ -33,7 +33,7 @@ offset_bottom = 40.0
 
 [node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Control"]
 layout_mode = 0
-offset_right = 652.0
+offset_right = 741.0
 offset_bottom = 1011.0
 
 [node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer/Control/PanelContainer"]

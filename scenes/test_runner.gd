@@ -1,8 +1,8 @@
 extends Node
 
 @onready var cm: CultManager       = $CultManager
-@onready var cs: CascadeSystem     = $CascadeSystem
-@onready var story: StorySystem    = $StorySystem
+@onready var cs: CascadeManager    = $CascadeManager
+@onready var story: StoryManager   = $StoryManager
 @onready var logger: RichTextLabel = $CanvasLayer/Control/PanelContainer/RichTextLabel
 
 func _ready() -> void:
@@ -54,7 +54,55 @@ func _ready() -> void:
 	_append_log_line("\n[memory tails]")
 	_print_memory_tails(data, 3)
 
+	logger.append_text("\n")
+	log_per_npc_summary(cm)
+	log_relationships_friendly(cm)
 # --- Helpers ----------------------------------------------------------------
+func log_relationships_friendly(_cm: CultManager) -> void:
+	var cd: CultData = _cm.cult_data
+	if cd == null:
+		return
+	var n: int = _cm.get_npc_count()
+
+	# Optional: icons per label (case-insensitive)
+	var icon_for := {
+						"hostile": "💢",
+						"distant": "😕",
+						"neutral": "😐",
+						"loyal": "🙂",
+						"devoted": "❤️",
+					}
+
+	for i in range(n):
+		for j in range(i + 1, n):
+			var name_i: String = (str(cd.npcs[i].display_name) if i < cd.npcs.size() else "NPC #%d" % i)
+			var name_j: String = (str(cd.npcs[j].display_name) if j < cd.npcs.size() else "NPC #%d" % j)
+
+			# The API already gives a human-friendly tier label
+			var tier_ij: String = str(cd.get_relationship_tier(i, j))
+			var tier_ji: String = str(cd.get_relationship_tier(j, i))
+
+			var icon_ij: String = icon_for.get(tier_ij.to_lower(), "")
+			var icon_ji: String = icon_for.get(tier_ji.to_lower(), "")
+
+			_append_log_line("%s ↔ %s  |  %s → %s%s, %s → %s%s" % [
+			name_i, name_j,
+			name_i, icon_ij, tier_ij,
+			name_j, icon_ji, tier_ji
+			])
+
+func log_per_npc_summary(_cm) -> void:
+	var n : int = _cm.get_npc_count()
+	for i in range(n):
+		var row := []
+		var sum := 0.0
+		for j in range(n):
+			if i == j: continue
+			var a : float = cm.get_affinity(i, j)
+			row.append("%.0f" % a)
+			sum += a
+		var _name := (str(_cm.cult_data.npcs[i].display_name) if _cm.cult_data and i < _cm.cult_data.npcs.size() else "NPC #%d" % i)
+		print("%s[#%d]: avg=%.1f vals=[%s]" % [_name, i, sum / float(max(1, n - 1)), ", ".join(row)])
 
 func _append_log_line(s: String) -> void:
 	logger.append_text(s + "\n")
@@ -146,8 +194,8 @@ func _make_cult_data(n: int) -> CultData:
 	#extends Node
 #
 #@onready var cm: CultManager = $CultManager
-#@onready var cs: CascadeSystem = $CascadeSystem
-#@onready var story: StorySystem = $StorySystem
+#@onready var cs: CascadeManager = $CascadeManager
+#@onready var story: StoryManager = $StoryManager
 #@onready var logger: RichTextLabel = $CanvasLayer/Control/PanelContainer/RichTextLabel
 #
 #func _ready() -> void:
@@ -191,8 +239,8 @@ func _make_cult_data(n: int) -> CultData:
 #	cm.state_changed.connect(_on_state_changed)
 #	#story.story_ready.connect(_on_story_ready)
 #	
-#	# 4) Prime some beliefs so StorySystem has something to read
-#	# (optional; adjust to your StorySystem logic) 
+#	# 4) Prime some beliefs so StoryManager has something to read
+#	# (optional; adjust to your StoryManager logic) 
 #	data.community_roles[0] = GameDefs.COMMUNITY_ROLE.APOSTLE
 #	data.community_roles[1] = GameDefs.COMMUNITY_ROLE.BUILDER
 #	
