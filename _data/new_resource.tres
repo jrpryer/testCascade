@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="CultData" load_steps=3 format=3 uid="uid://bh7s0bsuh01sk"]
+
+[ext_resource type="Script" uid="uid://c64mcx5msea0k" path="res://_data/npc_data.gd" id="1_lqxbf"]
+[ext_resource type="Script" uid="uid://l5vfq8u43dpc" path="res://_data/cult_data.gd" id="2_03bek"]
+
+[resource]
+script = ExtResource("2_03bek")
+stats_matrix = Array[PackedFloat32Array]([])
+metadata/_custom_type_script = "uid://l5vfq8u43dpc"

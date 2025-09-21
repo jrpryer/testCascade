@@ -16,17 +16,17 @@ class_name DetRng_type
 var world_seed: int = 0
 var _streams: Dictionary = {}  # name:StringName -> RandomNumberGenerator
 
-func init(seed: int) -> void:
-	world_seed = seed
+func init(i_seed: int) -> void:
+	world_seed = i_seed
 	_streams.clear()
 
-func _derive_seed(name: StringName) -> int:
+func _derive_seed(s_name: StringName) -> int:
 	# Derive a per-stream seed from (world_seed, name) via SHA-256 → first 8 bytes
 	var ctx := HashingContext.new()
 	ctx.start(HashingContext.HASH_SHA256)
 	var data := PackedByteArray()
 	data.append_array(str(world_seed).to_utf8_buffer())
-	data.append_array(String(name).to_utf8_buffer())
+	data.append_array(String(s_name).to_utf8_buffer())
 	ctx.update(data)
 	var digest := ctx.finish()  # PackedByteArray (32 bytes)
 	var s := 0
@@ -34,25 +34,25 @@ func _derive_seed(name: StringName) -> int:
 		s = (s << 8) | int(digest[i])
 	return int(s)
 
-func get_stream(name: StringName) -> RandomNumberGenerator:
-	if not _streams.has(name):
+func get_stream(s_name: StringName) -> RandomNumberGenerator:
+	if not _streams.has(s_name):
 		var rng := RandomNumberGenerator.new()
-		rng.seed = _derive_seed(name)
-		_streams[name] = rng
-	return _streams[name]
+		rng.seed = _derive_seed(s_name)
+		_streams[s_name] = rng
+	return _streams[s_name]
 
 # Sugar (Godot 4.4 — no generic function params)
-func randf(name: StringName) -> float: return get_stream(name).randf()
+func randf(s_name: StringName) -> float: return get_stream(s_name).randf()
 
-func randi(name: StringName) -> int: return get_stream(name).randi()
+func randi(s_name: StringName) -> int: return get_stream(s_name).randi()
 
-func randi_range(name: StringName, a: int, b: int) -> int: return get_stream(name).randi_range(a, b)
+func randi_range(s_name: StringName, a: int, b: int) -> int: return get_stream(s_name).randi_range(a, b)
 
-func choice_int(name: StringName, arr: Array[int]) -> int:
-	return arr[get_stream(name).randi_range(0, arr.size() - 1)] if not arr.is_empty() else 0
+func choice_int(s_name: StringName, arr: Array[int]) -> int:
+	return arr[get_stream(s_name).randi_range(0, arr.size() - 1)] if not arr.is_empty() else 0
 
-func choice_sn(name: StringName, arr: Array[StringName]) -> StringName:
-	return arr[get_stream(name).randi_range(0, arr.size() - 1)] if not arr.is_empty() else StringName("")
+func choice_sn(s_name: StringName, arr: Array[StringName]) -> StringName:
+	return arr[get_stream(s_name).randi_range(0, arr.size() - 1)] if not arr.is_empty() else StringName("")
 
 
 
@@ -88,8 +88,8 @@ func local_rng(parts: Array) -> RandomNumberGenerator:
 	rng.seed = _derive_seed(key(parts))  # same _derive_seed as before
 	return rng
 
-func choice_from(name: StringName, arr: Array) -> Variant:
-	return arr[get_stream(name).randi_range(0, arr.size()-1)]
+func choice_from(c_name: StringName, arr: Array) -> Variant:
+	return arr[get_stream(c_name).randi_range(0, arr.size()-1)]
 
 #Two pitfalls to avoid:
 #Never key by array index if that index can change; always key by stable IDs (npc.id) or absolute coords (x,y).

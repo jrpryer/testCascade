@@ -1,0 +1,40 @@
+[gd_scene load_steps=5 format=3 uid="uid://c67uaeohckyr1"]
+
+[ext_resource type="Script" uid="uid://b2ko3bny3e5l5" path="res://scenes/test_runner.gd" id="1_ebhye"]
+[ext_resource type="Script" uid="uid://c0na84w8h56y4" path="res://_systems/cult_manager.gd" id="2_4h71j"]
+[ext_resource type="Script" uid="uid://ni8dvv82evha" path="res://_systems/cascade_manager.gd" id="3_oyij0"]
+[ext_resource type="Script" uid="uid://clbwb0krl25ep" path="res://_systems/story.gd" id="4_4q0dr"]
+
+[node name="TestRunner" type="Node"]
+script = ExtResource("1_ebhye")
+
+[node name="CultManager" type="Node" parent="."]
+script = ExtResource("2_4h71j")
+metadata/_custom_type_script = "uid://c0na84w8h56y4"
+
+[node name="CascadeSystem" type="Node" parent="." node_paths=PackedStringArray("cult_manager")]
+script = ExtResource("3_oyij0")
+cult_manager = NodePath("../CultManager")
+metadata/_custom_type_script = "uid://ni8dvv82evha"
+
+[node name="StorySystem" type="Node" parent="." node_paths=PackedStringArray("cascade", "cult")]
+script = ExtResource("4_4q0dr")
+cascade = NodePath("../CascadeSystem")
+cult = NodePath("../CultManager")
+metadata/_custom_type_script = "uid://clbwb0krl25ep"
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Control"]
+layout_mode = 0
+offset_right = 652.0
+offset_bottom = 1011.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer/Control/PanelContainer"]
+layout_mode = 2
